@@ -1,0 +1,142 @@
+body {
+  background-color: #9abaeb;
+  font-family: sans-serif;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#toggle-sidebar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 12px;
+  font-size: 24px;
+  padding: 10px 16px;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#toggle-sidebar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#sidebar-wrapper {
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff00;
+  color: white;
+  transition: transform 0.3s ease;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#sidebar-wrapper.hidden {
+  transform: translateX(-160px);
+}
+
+#sidebar {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+#tool-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+#tool-list::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-button {
+  background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  width: 100%;
+  padding: 8px 0;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.scroll-button:hover {
+  background: linear-gradient(135deg, #c2d7e7, #90afc4);
+  transform: scale(1.05);
+}
+
+
+.tool {
+  width: 80px;
+  height: 80px;
+  background: #c2d7e7;
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  padding: 10px;
+  cursor: grab;
+  user-select: none;
+  color: black;
+}
+
+.main-content {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+
+.component {
+  cursor: pointer;
+}
+
+#test-zone {
+  pointer-events: none;
+}
+
+#test-zone-label{
+position: fixed;
+}
+
+svg {
+  border: 2px solid #aaa;
+  border-radius: 12px;
+  margin-top: 5px;
+  background-image: url('img/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 50px;
+
+  
+}
