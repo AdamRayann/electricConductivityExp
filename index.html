@@ -7,18 +7,24 @@
 </head>
 <body>
   <button id="toggle-sidebar">☰</button>
+
   <div id="sidebar-wrapper" class="visible">
     <div id="sidebar">
       <button class="scroll-button" id="scroll-up">▲</button>
       <div id="tool-list">
-        <div class="tool" draggable="true" data-type="wire">🔌<br>Wire</div>
-        <div class="tool" draggable="true" data-type="fuse">🧯<br>Fuse</div>
-        <div class="tool" draggable="true" data-type="bill">💵<br>Dollar Bill</div>
-        <div class="tool" draggable="true" data-type="clip">🧷<br>Paper Clip</div>
-        <div class="tool" draggable="true" data-type="coin">🪙<br>Coin</div>
+        <div class="tool" draggable="true" ondragstart="handleDragStart(event, 'silver')">
+          <img src="img/silver.png" width="40" height="40"><br>فضة
+        </div>
+        <div class="tool" draggable="true" ondragstart="handleDragStart(event, 'diamond')">
+          <img src="img/diamond.png" width="40" height="40"><br>الماس
+        </div>
+        <div class="tool" draggable="true" ondragstart="handleDragStart(event, 'graphite')">
+          <img src="img/graphite.png" width="40" height="60"><br>الغرافيت
+        </div>
       </div>
       <button class="scroll-button" id="scroll-down">▼</button>
     </div>
+    
   </div>
 
   <div class="main-content">
@@ -28,21 +34,34 @@
       <image id="battery" class="component" href="./img/battery.png" x="400" y="35" width="100" height="100" />
 
       <!-- Light Bulb -->
-      <image id="bulb" class="component" href="./img/bulb.png" x="400" y="350" width="100" height="100" />
+      <image id="bulb" class="component" href="./img/bulbOff.png" x="380" y="300" width="150" height="150" />
 
       <!-- Wire Path -->
       <path id="wire-path" stroke="black" stroke-width="15" fill="none" />
 
       <!-- Placeholder Area for Testing -->
-      <rect id="test-zone" width="100" height="150" fill="#f5f5f5" stroke="black" stroke-dasharray="5,5" />
-      <text id="test-zone-label" font-size="14" fill="black">اسحب الى هنا!</text>
+      <rect id="test-zone" pointer-events="all" width="100" height="150" fill="#f5f5f5" stroke="black" stroke-dasharray="5,5" />
+      <text id="test-zone-label" font-size="14" fill="black">! اسحب الى هنا</text>
 
       <!-- Electrons -->
       <g id="electrons"></g>
+      
     </svg>
+    
+  </div>
+  <button id="reset-btn"> 🔌 قطع الدائرة </button>
+
+  <div id="legend">
+    <div class="legend-title">🔑 مفتاح الرموز</div>
+    <div class="legend-item">
+      <div class="legend-circle"></div>
+      <span>الكترونات حرة</span>
+    </div>
   </div>
 
+
   <script>
+    // Sidebar functionality
     const sidebarWrapper = document.getElementById('sidebar-wrapper');
     const toggleBtn = document.getElementById('toggle-sidebar');
     const toolList = document.getElementById('tool-list');
@@ -58,7 +77,13 @@
     document.getElementById('scroll-down').addEventListener('click', () => {
       toolList.scrollTop += 80;
     });
+
+    // Global drag start handler
+    window.handleDragStart = function (event, type) {
+      event.dataTransfer.setData('text/plain', type);
+    };
   </script>
+
   <script src="script.js"></script>
 </body>
 </html>

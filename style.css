@@ -115,6 +115,43 @@ body {
   margin-top: 20px;
 }
 
+#legend {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  padding: 10px 10px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  z-index: 100;
+  min-width: 150px;
+}
+
+.legend-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 12px;
+  text-align: center;
+  color: #222;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.legend-circle {
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 30%, #ff4d4d, #cc0000);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255, 0, 0, 0.4);
+}
 
 
 .component {
@@ -122,8 +159,10 @@ body {
 }
 
 #test-zone {
-  pointer-events: none;
+  pointer-events: all;
+  cursor: pointer;
 }
+
 
 #test-zone-label{
 position: fixed;
@@ -139,4 +178,26 @@ svg {
   margin-bottom: 50px;
 
   
+}
+
+
+#reset-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1000;
+}
+
+#reset-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }

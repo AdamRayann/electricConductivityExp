@@ -7,7 +7,21 @@ const testZoneLabel = document.getElementById('test-zone-label');
 
 let dragging = null;
 let electronAnimationIds = [];
-let electronCount = 5;
+let electronCount = 10;
+let itemDropped = false;
+let droppedItemType = null;
+
+const conductivityMap = {
+  silver: { conductive: true, speed: 0.006 },
+  graphite: { conductive: true, speed: 0.003 },
+  diamond: { conductive: false, speed: 0 }
+};
+
+// Setup drag start function globally
+window.handleDragStart = function (event, type) {
+  event.dataTransfer.setData('text/plain', type);
+  droppedItemType = type;
+};
 
 function getMousePos(evt) {
   const svg = document.getElementById('circuit');
@@ -18,6 +32,8 @@ function getMousePos(evt) {
   };
 }
 
+let lastPath = [];
+
 function updateWires() {
   const ax = parseFloat(battery.getAttribute('x')) - 100;
   const ay = parseFloat(battery.getAttribute('y')) + 50;
@@ -25,38 +41,49 @@ function updateWires() {
   const by = parseFloat(bulb.getAttribute('y')) + 100;
 
   const junctionX = ax + 200;
-  const topY = 150;
-  const lowY = 600;
 
   const path = [
-    { x: ax + 100, y: ay },      // from battery right
-    { x: ax - 150, y: ay },      // go left
-    { x: ax - 150, y: by },    // go down
-    { x: bx, y: by },          // go right to bulb
-    { x: bx + 300, y: by },      // right from bulb to open end
-    { x: bx + 300, y: ay },    // up to placeholder
-    { x: junctionX, y: ay }    // left to connect to battery
+    { x: ax + 100, y: ay },
+    { x: ax - 150, y: ay },
+    { x: ax - 150, y: by + 50 },
+    { x: bx, y: by + 50 },
+    { x: bx + 300, y: by + 50 },
+    { x: bx + 300, y: ay },
+    { x: junctionX, y: ay }
   ];
 
-  // Update wire path
+  lastPath = path;
+
   let d = `M ${path[0].x},${path[0].y}`;
   for (let i = 1; i < path.length; i++) {
     d += ` L ${path[i].x},${path[i].y}`;
   }
   wirePath.setAttribute('d', d);
 
-  // Stick test zone to the segment between path[4] and path[5]
-  const testX = path[4].x - 50;
-  const testY = (path[4].y + path[5].y) / 2 - 75;
-  testZone.setAttribute('x', testX);
-  testZone.setAttribute('y', testY);
-  testZoneLabel.setAttribute('x', testX + 10);
-  testZoneLabel.setAttribute('y', testY + 80);
+  if (!itemDropped) {
+    const testX = path[4].x - 50;
+    const testY = (path[4].y + path[5].y) / 2 - 75;
+    testZone.setAttribute('x', testX);
+    testZone.setAttribute('y', testY);
+    testZoneLabel.setAttribute('x', testX + 15);
+    testZoneLabel.setAttribute('y', testY + 80);
+  }
 
-  startElectronAnimation(path);
+  if (itemDropped) {
+    const conductivity = conductivityMap[droppedItemType];
+    if (conductivity?.conductive) {
+      bulb.setAttribute('href', 'img/bulbOn.png');
+      startElectronAnimation(path, conductivity.speed);
+    } else {
+      bulb.setAttribute('href', 'img/bulbOff.png');
+      startElectronAnimation(path, 0);
+    }
+  } else {
+    stopElectronAnimation();
+  }
 }
 
-function startElectronAnimation(path) {
+function startElectronAnimation(path, speed = 0.003) {
   electronsGroup.innerHTML = '';
   electronAnimationIds.forEach(id => cancelAnimationFrame(id));
   electronAnimationIds = [];
@@ -64,17 +91,16 @@ function startElectronAnimation(path) {
   for (let i = 0; i < electronCount; i++) {
     const electron = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     electron.setAttribute('r', 6);
-    electron.setAttribute('fill', 'blue');
+    electron.setAttribute('fill', 'red');
     electronsGroup.appendChild(electron);
-    animateElectron(electron, i * 0.2, path);
+    animateElectron(electron, (i / electronCount), path, speed);
   }
 }
 
-function animateElectron(electron, delay, path) {
+function animateElectron(electron, delay, path, speed) {
   let t = delay;
-
   function step() {
-    t += 0.003;
+    t += speed;
     if (t > 1) t = 0;
     const totalSegments = path.length - 1;
     const segment = Math.floor(t * totalSegments);
@@ -89,6 +115,13 @@ function animateElectron(electron, delay, path) {
     electronAnimationIds.push(id);
   }
   step();
+}
+
+function stopElectronAnimation() {
+  bulb.setAttribute('href', 'img/bulbOff.png');
+  electronAnimationIds.forEach(id => cancelAnimationFrame(id));
+  electronAnimationIds = [];
+  electronsGroup.innerHTML = '';
 }
 
 function makeDraggable(el) {
@@ -112,3 +145,65 @@ document.addEventListener('mouseup', () => {
 makeDraggable(battery);
 makeDraggable(bulb);
 updateWires();
+
+function handleDropEvent(e) {
+  e.preventDefault();
+  if (!droppedItemType || itemDropped) return;
+
+  itemDropped = true;
+  testZone.style.display = 'none';
+  testZoneLabel.style.display = 'none';
+
+  const x = testZone.getAttribute('x');
+  const y = testZone.getAttribute('y');
+
+  const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+  img.setAttribute("href", `img/${droppedItemType}.png`);
+  img.setAttribute("x", x);
+  img.setAttribute("y", y);
+  img.setAttribute("width", "100");
+  img.setAttribute("height", "190");
+  img.setAttribute("id", "dropped-item");
+  document.getElementById("circuit").appendChild(img);
+
+  enableDroppedItemReset();
+
+  const conductivity = conductivityMap[droppedItemType];
+  if (conductivity?.conductive) {
+    bulb.setAttribute('href', 'img/bulbOn.png');
+    startElectronAnimation(lastPath, conductivity.speed);
+  } else {
+    bulb.setAttribute('href', 'img/bulbOff.png');
+    startElectronAnimation(lastPath, 0);
+  }
+}
+
+[testZone, testZoneLabel].forEach(el => {
+  el.addEventListener('dragover', e => e.preventDefault());
+  el.addEventListener('drop', handleDropEvent);
+});
+
+function enableDroppedItemReset() {
+  const dropped = document.getElementById('dropped-item');
+  if (!dropped) return;
+
+  dropped.style.cursor = 'pointer';
+  dropped.setAttribute('draggable', true);
+
+  const reset = () => {
+    dropped.remove();
+    testZone.style.display = 'block';
+    testZoneLabel.style.display = 'block';
+    itemDropped = false;
+    droppedItemType = null;
+    stopElectronAnimation();
+    updateWires();
+  };
+
+  dropped.addEventListener('click', reset);
+  dropped.addEventListener('dragstart', reset);
+}
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  location.reload();
+});
