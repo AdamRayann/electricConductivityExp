@@ -205,5 +205,56 @@ function enableDroppedItemReset() {
 }
 
 document.getElementById('reset-btn').addEventListener('click', () => {
-  location.reload();
+  const dropped = document.getElementById('dropped-item');
+  if (dropped) dropped.remove();
+
+  testZone.style.display = 'block';
+  testZoneLabel.style.display = 'block';
+  
+  itemDropped = false;
+  droppedItemType = null;
+  
+  stopElectronAnimation();
+  bulb.setAttribute('href', 'img/bulbOff.png');
+  updateWires();
+});
+
+
+
+
+function preloadImages(imageNames, onComplete) {
+  let loadedCount = 0;
+  const total = imageNames.length;
+
+  imageNames.forEach(name => {
+    const img = new Image();
+    img.src = `img/${name}`;
+    img.onload = () => {
+      loadedCount++;
+      if (loadedCount === total) {
+        onComplete(); // All images loaded
+      }
+    };
+    img.onerror = () => {
+      console.warn(`❌ Failed to load img/${name}`);
+      loadedCount++;
+      if (loadedCount === total) {
+        onComplete(); // Even with errors, continue
+      }
+    };
+  });
+}
+
+const imageFiles = [
+  'silver.png',
+  'graphite.png',
+  'diamond.png',
+  'battery.png',
+  'bulbOn.png',
+  'bulbOff.png',
+  'bg.jpg'
+];
+
+preloadImages(imageFiles, () => {
+  console.log('✅ All images loaded. Starting the app...');
 });
