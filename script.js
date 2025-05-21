@@ -4,6 +4,7 @@ const bulb = document.getElementById('bulb');
 const electronsGroup = document.getElementById('electrons');
 const testZone = document.getElementById('test-zone');
 const testZoneLabel = document.getElementById('test-zone-label');
+const gifDisplay = document.getElementById('gif-display');
 
 let dragging = null;
 let electronAnimationIds = [];
@@ -14,7 +15,10 @@ let droppedItemType = null;
 const conductivityMap = {
   silver: { conductive: true, speed: 0.006 },
   graphite: { conductive: true, speed: 0.003 },
-  diamond: { conductive: false, speed: 0 }
+  diamond: { conductive: false, speed: 0 },
+  salt: { conductive: false, speed: 0 },
+  sager: { conductive: false, speed: 0 },
+  saltedWater: { conductive: true, speed: 0.003 }
 };
 
 // Setup drag start function globally
@@ -156,6 +160,9 @@ function handleDropEvent(e) {
 
   const x = testZone.getAttribute('x');
   const y = testZone.getAttribute('y');
+  gifDisplay.style.display = 'flex';
+  gifDisplay.innerHTML = `<img src="img/${droppedItemType}.gif" alt="${droppedItemType} gif" />`;
+
 
   const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
   img.setAttribute("href", `img/${droppedItemType}.png`);
@@ -185,13 +192,16 @@ function handleDropEvent(e) {
 
 function enableDroppedItemReset() {
   const dropped = document.getElementById('dropped-item');
-  if (!dropped) return;
+  if (!dropped) {
+    gifDisplay.style.display = 'none';
+    return;}
 
   dropped.style.cursor = 'pointer';
   dropped.setAttribute('draggable', true);
 
   const reset = () => {
     dropped.remove();
+    gifDisplay.style.display = 'none';
     testZone.style.display = 'block';
     testZoneLabel.style.display = 'block';
     itemDropped = false;
@@ -207,6 +217,7 @@ function enableDroppedItemReset() {
 document.getElementById('reset-btn').addEventListener('click', () => {
   const dropped = document.getElementById('dropped-item');
   if (dropped) dropped.remove();
+  gifDisplay.style.display = 'none';
 
   testZone.style.display = 'block';
   testZoneLabel.style.display = 'block';
