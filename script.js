@@ -7,6 +7,9 @@ const testZoneLabel = document.getElementById('test-zone-label');
 const gifDisplay = document.getElementById('gif-display');
 const electronViewCheckbox = document.getElementById('electron-view');
 const atomicViewCheckbox = document.getElementById('atomic-view');
+const explanationBox = document.getElementById('explanation-box');
+const conductivityBtn = document.getElementById('conductivity-btn');
+const structureBtn = document.getElementById('structure-btn');
 
 let dragging = null;
 let electronAnimationIds = [];
@@ -22,6 +25,23 @@ const conductivityMap = {
   sager: { conductive: false, speed: 0 },
   saltedWater: { conductive: true, speed: 0.003 }
 };
+
+const itemExplanations = {
+  silver: {
+    conductivity: "الفضة موصل ممتاز للكهرباء، لذلك تسمح بمرور الإلكترونات بسهولة وتضيء المصباح بسرعة.",
+    structure: "الفضة تحتوي على إلكترونات حرة تتحرك بسهولة في بنيتها المعدنية، مما يجعلها موصلًا فعالًا."
+  },
+  graphite: {
+    conductivity: "الجرافيت موصل جيد نسبيًا للكهرباء، يسمح بمرور الإلكترونات لكن بشكل أبطأ من الفضة.",
+    structure: "الجرافيت يتكون من طبقات من ذرات الكربون، مع إلكترونات حرة بين الطبقات تتيح التوصيل."
+  },
+  diamond: {
+  conductivity: `سبب عدم التوصيل للكهرباء:\n• يتطلب التوصيل الكهربائي وجود إلكترونات حرة الحركة قادرة على الانتقال عبر المادة.\n• في الألماس، تكون جميع الإلكترونات مقيدة داخل الروابط التساهمية، ولا توجد إلكترونات حرة.\n• لذلك، لا يستطيع الألماس نقل التيار الكهربائي، ويُعتبر مادة عازلة.`,
+  structure: `الألماس في الحالة الصلبة:\n• يتكون الألماس من ذرات كربون C، وكل ذرة كربون ترتبط مع 4 ذرات كربون أخرى بروابط تساهمية قوية جدًا.\n• تُشكل هذه الروابط شبكة ثلاثية الأبعاد منتظمة وثابتة تعرف باسم الشبكة البلورية المكعبة.\n• كل إلكترون من إلكترونات التكافؤ الأربعة لكل ذرة كربون مشارك في رباط تساهمي واحد، أي لا يوجد إلكترونات حرة.`
+}
+
+};
+
 
 window.handleDragStart = function (event, type) {
   event.dataTransfer.setData('text/plain', type);
@@ -169,6 +189,7 @@ function handleDropEvent(e) {
 
   enableDroppedItemReset();
   updateGifDisplay();
+  updateExplanationBox();
   updateWires();
 }
 
@@ -186,6 +207,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   droppedItemType = null;
   stopElectronAnimation();
   gifDisplay.style.display = 'none';
+  explanationBox.textContent = '';
   updateWires();
 });
 
@@ -204,6 +226,7 @@ function enableDroppedItemReset() {
     droppedItemType = null;
     stopElectronAnimation();
     gifDisplay.style.display = 'none';
+    explanationBox.textContent = '';
     updateWires();
   };
 
@@ -242,54 +265,35 @@ function updateGifDisplay() {
   gifDisplay.style.display = 'block';
 }
 
+let currentExplanationType = 'structure'; // default
 
-function preloadImages(imageNames, onComplete) {
-  let loadedCount = 0;
-  const total = imageNames.length;
+function updateExplanationBox() {
+  if (!itemDropped || !droppedItemType) {
+    explanationBox.textContent = '';
+    return;
+  }
 
-  imageNames.forEach(name => {
-    const img = new Image();
-    img.src = `img/${name}`;
-    img.onload = () => {
-      loadedCount++;
-      if (loadedCount === total) {
-        onComplete(); // All images loaded
-      }
-    };
-    img.onerror = () => {
-      console.warn(`❌ Failed to load img/${name}`);
-      loadedCount++;
-      if (loadedCount === total) {
-        onComplete(); // Even with errors, continue
-      }
-    };
-  });
+  const data = itemExplanations[droppedItemType];
+  if (!data) return;
+
+  explanationBox.textContent = currentExplanationType === 'conductivity'
+    ? data.conductivity
+    : data.structure;
 }
 
-const imageFiles = [
-  'salt.png',
-  'sugar.png',
-  'saltedWater.png',
-  'silver.png',
-  'graphite.png',
-  'diamond.png',
-  'battery.png',
-  'bulbOn.png',
-  'bulbOff.png',
-  'graphite_atomic.png',
-  'sugar_atomic.png',
-  'salt_atomic.png',
-  'diamond_atomic.png',
-  'saltedWater_atomic.png',
-  'bg.jpg',
-  'silver.gif',
-  'diamond.gif',
-  'graphite.gif',
-  'salt.gif',
-  'sugar.gif',
-  'saltedWater.gif'
-];
 
-preloadImages(imageFiles, () => {
-  console.log('✅ All images loaded. Starting the app...');
+conductivityBtn.addEventListener('click', () => {
+  if (droppedItemType && itemExplanations[droppedItemType]) {
+    explanationBox.textContent = itemExplanations[droppedItemType].conductivity || 'لا يوجد شرح موصلية متاح.';
+  } else {
+    explanationBox.textContent = 'يرجى إسقاط عنصر في منطقة الاختبار أولاً.';
+  }
+});
+
+structureBtn.addEventListener('click', () => {
+  if (droppedItemType && itemExplanations[droppedItemType]) {
+    explanationBox.textContent = itemExplanations[droppedItemType].structure || 'لا يوجد شرح مبنى متاح.';
+  } else {
+    explanationBox.textContent = 'يرجى إسقاط عنصر في منطقة الاختبار أولاً.';
+  }
 });

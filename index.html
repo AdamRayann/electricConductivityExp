@@ -38,12 +38,12 @@
 
   <div class="main-content">
     <h2>💡 محاكاة التوصيل الكهربائي</h2>
-    <svg id="circuit" width="900" height="520">
+    <svg id="circuit" width="800" height="420">
       <!-- Battery -->
-      <image id="battery" class="component" href="./img/battery.png" x="400" y="35" width="100" height="100" />
+      <image id="battery" class="component" href="./img/battery.png" x="350" y="20" width="100" height="100" />
 
       <!-- Light Bulb -->
-      <image id="bulb" class="component" href="./img/bulbOff.png" x="380" y="300" width="150" height="150" />
+      <image id="bulb" class="component" href="./img/bulbOff.png" x="320" y="200" width="150" height="150" />
 
       <!-- Wire Path -->
       <path id="wire-path" stroke="black" stroke-width="15" fill="none" />
@@ -61,7 +61,7 @@
   <button id="reset-btn"> 🔌 قطع الدائرة </button>
 <div id="gif-container" >
   <label><input type="checkbox" id="electron-view" checked> حركة الالكترونات</label>
-  <label><input type="checkbox" id="atomic-view"> المبنى الجزيئي</label>
+  <label><input type="checkbox" id="atomic-view"> المبنى الميكروسكوبي</label>
   <img id="gif-display" src="" />
 </div>
 
@@ -75,6 +75,15 @@
     </div>
  
   </div>
+
+<div id="explanation-container">
+  <div id="explanation-buttons">
+    <button id="conductivity-btn">شرح الموصلية</button>
+    <button id="structure-btn">شرح المبنى</button>
+  </div>
+  <div id="explanation-box"></div>
+</div>
+
 
 
   <script>
@@ -103,4 +112,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>

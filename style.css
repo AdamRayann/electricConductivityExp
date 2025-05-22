@@ -112,8 +112,61 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: -70px;
 }
+
+
+#explanation-container {
+  position: fixed;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
+  padding: 12px;
+  border-radius: 3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 850px;
+  width: 90%;
+  z-index: 999;
+  text-align: right;
+}
+
+#explanation-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0px;
+  margin-bottom: 8px;
+  margin-top: -36px;
+  margin-right: -12px;
+  
+}
+
+#explanation-buttons button {
+  background: linear-gradient(135deg, #7197bb, #a6bfd6);
+  color: #000;
+  border: none;
+  border-radius: 2px;
+  padding: 4px 14px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#explanation-buttons button:hover {
+  transform: scale(1.05);
+}
+
+#explanation-box {
+  white-space: pre-wrap;         /* preserve line breaks */
+  font-family: 'Courier New', monospace;  /* optional: makes it look more structured */
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+    direction: rtl;
+
+}
+
+
 
 #legend {
     background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
