@@ -157,27 +157,7 @@ body {
   margin-right: 35px;
 
 }
-.legend-circle1 {
-  
-  width: 17px;
-  height: 17px;
-  background: radial-gradient(circle at 30% 30%, #a3bfe4, #021d44);
-  border-radius: 50%;
-  box-shadow: 0 0 6px rgba(2, 17, 160, 0.4);
-  margin-right: 63px;
-}
 
-.legend-circle2 {
-  
-  width: 20px;
-  height: 20px;
-  background: radial-gradient(circle at 30% 30%, #d7a6e6, #9554b3);
-  border-radius: 50%;
-  box-shadow: 0 0 6px rgba(125, 4, 141, 0.4);
-  margin-right: 4px;
-  margin-left: 15px;
-
-}
 
 .component {
   cursor: pointer;
@@ -228,27 +208,36 @@ svg {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
 }
 
-#gif-display {
+#gif-container {
   position: fixed;
-  top: 53%;
+  top: 50%;
   right: 15px;
   transform: translateY(-50%);
-  width: 200px;
-  height: 180px;
-  background-color: #ffffffcc;
+  background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
-  display: none;
-  justify-content: center;
+  padding: 12px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  overflow: hidden;
-  padding: 10px;
   z-index: 999;
 }
-#gif-display img {
-  width: 135%;
-  height: auto;
+
+#gif-container label {
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
 }
+
+#gif-display {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  border-radius: 12px;
+  display: none;
+  margin-top: 10px;
+}
+
 
 

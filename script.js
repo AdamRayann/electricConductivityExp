@@ -5,6 +5,8 @@ const electronsGroup = document.getElementById('electrons');
 const testZone = document.getElementById('test-zone');
 const testZoneLabel = document.getElementById('test-zone-label');
 const gifDisplay = document.getElementById('gif-display');
+const electronViewCheckbox = document.getElementById('electron-view');
+const atomicViewCheckbox = document.getElementById('atomic-view');
 
 let dragging = null;
 let electronAnimationIds = [];
@@ -21,7 +23,6 @@ const conductivityMap = {
   saltedWater: { conductive: true, speed: 0.003 }
 };
 
-// Setup drag start function globally
 window.handleDragStart = function (event, type) {
   event.dataTransfer.setData('text/plain', type);
   droppedItemType = type;
@@ -73,21 +74,17 @@ function updateWires() {
     testZoneLabel.setAttribute('y', testY + 80);
   }
 
-  if (itemDropped) {
-    const conductivity = conductivityMap[droppedItemType];
-    if (conductivity?.conductive) {
-      bulb.setAttribute('href', 'img/bulbOn.png');
-      startElectronAnimation(path, conductivity.speed);
-    } else {
-      bulb.setAttribute('href', 'img/bulbOff.png');
-      startElectronAnimation(path, 0);
-    }
+  if (itemDropped && conductivityMap[droppedItemType]?.conductive) {
+    startElectronAnimation(path, conductivityMap[droppedItemType].speed);
+  } else if (itemDropped) {
+    startElectronAnimation(path, 0);
   } else {
     stopElectronAnimation();
   }
 }
 
 function startElectronAnimation(path, speed = 0.003) {
+  bulb.setAttribute('href', speed > 0 ? 'img/bulbOn.png' : 'img/bulbOff.png');
   electronsGroup.innerHTML = '';
   electronAnimationIds.forEach(id => cancelAnimationFrame(id));
   electronAnimationIds = [];
@@ -160,9 +157,6 @@ function handleDropEvent(e) {
 
   const x = testZone.getAttribute('x');
   const y = testZone.getAttribute('y');
-  gifDisplay.style.display = 'flex';
-  gifDisplay.innerHTML = `<img src="img/${droppedItemType}.gif" alt="${droppedItemType} gif" />`;
-
 
   const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
   img.setAttribute("href", `img/${droppedItemType}.png`);
@@ -174,15 +168,8 @@ function handleDropEvent(e) {
   document.getElementById("circuit").appendChild(img);
 
   enableDroppedItemReset();
-
-  const conductivity = conductivityMap[droppedItemType];
-  if (conductivity?.conductive) {
-    bulb.setAttribute('href', 'img/bulbOn.png');
-    startElectronAnimation(lastPath, conductivity.speed);
-  } else {
-    bulb.setAttribute('href', 'img/bulbOff.png');
-    startElectronAnimation(lastPath, 0);
-  }
+  updateGifDisplay();
+  updateWires();
 }
 
 [testZone, testZoneLabel].forEach(el => {
@@ -190,23 +177,33 @@ function handleDropEvent(e) {
   el.addEventListener('drop', handleDropEvent);
 });
 
+document.getElementById('reset-btn').addEventListener('click', () => {
+  const dropped = document.getElementById('dropped-item');
+  if (dropped) dropped.remove();
+  testZone.style.display = 'block';
+  testZoneLabel.style.display = 'block';
+  itemDropped = false;
+  droppedItemType = null;
+  stopElectronAnimation();
+  gifDisplay.style.display = 'none';
+  updateWires();
+});
+
 function enableDroppedItemReset() {
   const dropped = document.getElementById('dropped-item');
-  if (!dropped) {
-    gifDisplay.style.display = 'none';
-    return;}
+  if (!dropped) return;
 
   dropped.style.cursor = 'pointer';
   dropped.setAttribute('draggable', true);
 
   const reset = () => {
     dropped.remove();
-    gifDisplay.style.display = 'none';
     testZone.style.display = 'block';
     testZoneLabel.style.display = 'block';
     itemDropped = false;
     droppedItemType = null;
     stopElectronAnimation();
+    gifDisplay.style.display = 'none';
     updateWires();
   };
 
@@ -214,23 +211,36 @@ function enableDroppedItemReset() {
   dropped.addEventListener('dragstart', reset);
 }
 
-document.getElementById('reset-btn').addEventListener('click', () => {
-  const dropped = document.getElementById('dropped-item');
-  if (dropped) dropped.remove();
-  gifDisplay.style.display = 'none';
-
-  testZone.style.display = 'block';
-  testZoneLabel.style.display = 'block';
-  
-  itemDropped = false;
-  droppedItemType = null;
-  
-  stopElectronAnimation();
-  bulb.setAttribute('href', 'img/bulbOff.png');
-  updateWires();
+electronViewCheckbox.addEventListener('change', () => {
+  if (electronViewCheckbox.checked) {
+    atomicViewCheckbox.checked = false;
+    updateGifDisplay();
+  }
 });
 
+atomicViewCheckbox.addEventListener('change', () => {
+  if (atomicViewCheckbox.checked) {
+    electronViewCheckbox.checked = false;
+    updateGifDisplay();
+  }
+});
 
+function updateGifDisplay() {
+  if (!itemDropped || !droppedItemType) {
+    gifDisplay.style.display = 'none';
+    return;
+  }
+
+  let src = '';
+  if (electronViewCheckbox.checked) {
+    src = `img/${droppedItemType}.gif`;
+  } else if (atomicViewCheckbox.checked) {
+    src = `img/${droppedItemType}_atomic.png`;
+  }
+
+  gifDisplay.src = src;
+  gifDisplay.style.display = 'block';
+}
 
 
 function preloadImages(imageNames, onComplete) {
@@ -257,13 +267,27 @@ function preloadImages(imageNames, onComplete) {
 }
 
 const imageFiles = [
+  'salt.png',
+  'sugar.png',
+  'saltedWater.png',
   'silver.png',
   'graphite.png',
   'diamond.png',
   'battery.png',
   'bulbOn.png',
   'bulbOff.png',
-  'bg.jpg'
+  'graphite_atomic.png',
+  'sugar_atomic.png',
+  'salt_atomic.png',
+  'diamond_atomic.png',
+  'saltedWater_atomic.png',
+  'bg.jpg',
+  'silver.gif',
+  'diamond.gif',
+  'graphite.gif',
+  'salt.gif',
+  'sugar.gif',
+  'saltedWater.gif'
 ];
 
 preloadImages(imageFiles, () => {
