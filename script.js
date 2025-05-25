@@ -23,7 +23,8 @@ const conductivityMap = {
   diamond: { conductive: false, speed: 0 },
   salt: { conductive: false, speed: 0 },
   sager: { conductive: false, speed: 0 },
-  saltedWater: { conductive: true, speed: 0.003 }
+  saltedWater: { conductive: true, speed: 0.003 },
+  meltedSalt: { conductive: true, speed: 0.003 }
 };
 
 const itemExplanations = {
