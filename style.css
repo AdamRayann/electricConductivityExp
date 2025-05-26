@@ -118,24 +118,60 @@ body {
 
 #explanation-container {
   position: fixed;
-  bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
-  padding: 12px;
+  padding-top: 12px;
+  padding-right: 12px;
+  padding-left: 12px;
   border-radius: 3px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  max-width: 850px;
+  max-width: 775px;
   width: 90%;
   z-index: 999;
   text-align: right;
+  bottom: 3px;
+
+
+}
+#toggle-explanation-arrow {
+  font-size: 22px;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 20px;
+  background-color: #c2d7e7;
+  border-radius:4px;
+  transition: background 0.2s;
+  margin-right: 200px;
+}
+
+
+#explanation-container.collapsed {
+  transform: translateX(-50%) translateY(90%);
+  transition: transform 0.3s ease;
+}
+
+#explanation-container {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #d8e6f3, #a6bfd6);
+  padding-top: 12px;
+  padding-right: 12px;
+  padding-left: 12px;
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 775px;
+  width: 90%;
+  z-index: 999;
+  text-align: right;
+  transition: transform 0.3s ease;
 }
 
 #explanation-buttons {
   display: flex;
   justify-content: flex-end;
   gap: 0px;
-  margin-bottom: 8px;
   margin-top: -36px;
   margin-right: -12px;
   
@@ -152,6 +188,10 @@ body {
   transition: 0.2s;
 }
 
+#explanation-buttons button.active {
+  background: #c2d7e7;
+}
+
 #explanation-buttons button:hover {
   transform: scale(1.05);
 }
@@ -163,7 +203,8 @@ body {
   line-height: 1.6;
   white-space: pre-line;
   direction: rtl;
-
+  overflow-y: auto;
+  max-height: 100px;
 }
 
 

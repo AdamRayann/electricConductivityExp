@@ -283,12 +283,18 @@ function updateExplanationBox() {
 }
 
 
+const activeBg = '#c2d7e7';
+const defaultBg = ''; 
+
 conductivityBtn.addEventListener('click', () => {
   if (droppedItemType && itemExplanations[droppedItemType]) {
     explanationBox.textContent = itemExplanations[droppedItemType].conductivity || 'لا يوجد شرح موصلية متاح.';
   } else {
     explanationBox.textContent = 'يرجى إسقاط عنصر في منطقة الاختبار أولاً.';
   }
+
+  conductivityBtn.classList.add('active');
+  structureBtn.classList.remove('active');
 });
 
 structureBtn.addEventListener('click', () => {
@@ -297,4 +303,16 @@ structureBtn.addEventListener('click', () => {
   } else {
     explanationBox.textContent = 'يرجى إسقاط عنصر في منطقة الاختبار أولاً.';
   }
+
+  structureBtn.classList.add('active');
+  conductivityBtn.classList.remove('active');
+});
+
+
+const toggleArrow = document.getElementById('toggle-explanation-arrow');
+const explanationContainer = document.getElementById('explanation-container');
+
+toggleArrow.addEventListener('click', () => {
+  explanationContainer.classList.toggle('collapsed');
+  toggleArrow.textContent = explanationContainer.classList.contains('collapsed') ? '▲' : '▼';
 });
